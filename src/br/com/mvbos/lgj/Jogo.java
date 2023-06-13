@@ -141,7 +141,7 @@ public class Jogo extends JFrame {
 				g2d.fillRect(0, 0, JANELA_LARGURA, JANELA_ALTURA);
 
 				if (controleTecla[Tecla.BA.ordinal()]) {
-					// Pressionou espaço ou enter
+					// Pressionou espaï¿½o ou enter
 					if (cenario instanceof InicioCenario) {
 						cenario.descarregar();
 						cenario = null;
@@ -152,7 +152,6 @@ public class Jogo extends JFrame {
 						tela.repaint();
 
 						cenario.carregar();
-
 					} else {
 						Jogo.pausado = !Jogo.pausado;
 					}
@@ -189,6 +188,15 @@ public class Jogo extends JFrame {
 					}
 				}
 
+				if (cenario instanceof JogoCenario) {
+					if (((JogoCenario) cenario).restartGame()) {
+						cenario.descarregar();
+						cenario = null;
+
+						carregarJogo();
+					}
+				}
+
 				tela.repaint();
 				prxAtualizacao = System.currentTimeMillis() + FPS;
 			}
@@ -200,5 +208,4 @@ public class Jogo extends JFrame {
 		jogo.carregarJogo();
 		jogo.iniciarJogo();
 	}
-
 }

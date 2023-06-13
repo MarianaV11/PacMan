@@ -3,8 +3,11 @@ package br.com.mvbos.lgj.base;
 import java.awt.Graphics2D;
 
 public abstract class CenarioPadrao {
-
 	protected int altura, largura;
+
+	public CenarioPadrao () {
+
+	}
 
 	public CenarioPadrao(int largura, int altura) {
 		this.altura = altura;

@@ -70,5 +70,4 @@ public class Pizza extends Elemento {
 	public void setModo(Modo modo) {
 		this.modo = modo;
 	}
-
 }

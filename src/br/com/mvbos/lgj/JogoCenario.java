@@ -1,10 +1,12 @@
 package br.com.mvbos.lgj;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.util.Random;
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.*;
+import java.util.List;
 
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 import br.com.mvbos.lgj.Pizza.Modo;
 import br.com.mvbos.lgj.base.CenarioPadrao;
@@ -43,6 +45,8 @@ public class JogoCenario extends CenarioPadrao {
 
 	public JogoCenario(int largura, int altura) {
 		super(largura, altura);
+		readRanking();
+		lossCounter = 3;
 	}
 
 	private ImageIcon fundo;
@@ -55,6 +59,11 @@ public class JogoCenario extends CenarioPadrao {
 
 	private int totalPastilha;
 	private int pontos;
+	private String playerName;
+
+	private int lossCounter;
+
+	private List<Player> ranking = new ArrayList<>();
 
 	private int pontoFugaCol;
 	private int pontoFugaLin;
@@ -63,10 +72,10 @@ public class JogoCenario extends CenarioPadrao {
 	private int pontoVoltaLin;
 
 	private boolean superPizza;
-
 	@Override
 	public void carregar() {
-		grade = Nivel.cenario; // copiaNivel(Nivel.cenario);
+		grade = copiaNivel(Nivel.cenario);
+
 		largEl = largura / grade[0].length; // 16
 
 		texto.setCor(Color.WHITE);
@@ -80,7 +89,7 @@ public class JogoCenario extends CenarioPadrao {
 		pizza.setDirecao(Direcao.OESTE);
 
 		// Inimigos
-		inimigos = new Pizza[2];
+		inimigos = new Pizza[4];
 
 		inimigos[0] = new Pizza(0, 0, largEl, largEl);
 		inimigos[0].setVel(3 + Jogo.nivel);
@@ -96,9 +105,23 @@ public class JogoCenario extends CenarioPadrao {
 		inimigos[1].setDirecao(Direcao.NORTE);
 		inimigos[1].setModo(Pizza.Modo.PRESO);
 
+		inimigos[2] = new Pizza(0, 0, largEl, largEl);
+		inimigos[2].setVel(2 + Jogo.nivel);
+		inimigos[2].setAtivo(false);
+		inimigos[2].setCor(Color.CYAN);
+		inimigos[2].setDirecao(Direcao.SUL);
+		inimigos[2].setModo(Pizza.Modo.PRESO);
+
+		inimigos[3] = new Pizza(0, 0, largEl, largEl);
+		inimigos[3].setVel(2 + Jogo.nivel);
+		inimigos[3].setAtivo(false);
+		inimigos[3].setCor(Color.BLUE);
+		inimigos[3].setDirecao(Direcao.NORTE);
+		inimigos[3].setModo(Pizza.Modo.PRESO);
+
 		for (int lin = 0; lin < grade.length; lin++) {
 			for (int col = 0; col < grade[0].length; col++) {
-				if (grade[lin][col] == Nivel.CN || grade[lin][col] == Nivel.SC) {
+				if (grade[lin][col] == Nivel.CN || grade[lin][col] == Nivel.SC || grade[lin][col] == Nivel.FV) {
 					totalPastilha++;
 
 				} else if (grade[lin][col] == Nivel.PI) {
@@ -113,6 +136,12 @@ public class JogoCenario extends CenarioPadrao {
 					inimigos[1].setPx(converteInidicePosicao(col));
 					inimigos[1].setPy(converteInidicePosicao(lin));
 
+				} else if (grade[lin][col] == Nivel.P3) {
+					inimigos[2].setPx(converteInidicePosicao(col));
+					inimigos[2].setPy(converteInidicePosicao(lin));
+				} else if (grade[lin][col] == Nivel.P4) {
+					inimigos[3].setPx(converteInidicePosicao(col));
+					inimigos[3].setPy(converteInidicePosicao(lin));
 				} else if (grade[lin][col] == Nivel.PF) {
 					pontoFugaCol = col;
 					pontoFugaLin = lin;
@@ -151,6 +180,14 @@ public class JogoCenario extends CenarioPadrao {
 		inimigos[1].setModo(Pizza.Modo.PRESO);
 		inimigos[1].setAtivo(false);
 
+		inimigos[2].setDirecao(Direcao.SUL);
+		inimigos[2].setModo(Pizza.Modo.PRESO);
+		inimigos[2].setAtivo(false);
+
+		inimigos[3].setDirecao(Direcao.NORTE);
+		inimigos[3].setModo(Pizza.Modo.PRESO);
+		inimigos[3].setAtivo(false);
+
 		for (int lin = 0; lin < grade.length; lin++) {
 			for (int col = 0; col < grade[0].length; col++) {
 				if (grade[lin][col] == Nivel.PI) {
@@ -165,6 +202,12 @@ public class JogoCenario extends CenarioPadrao {
 					inimigos[1].setPx(converteInidicePosicao(col));
 					inimigos[1].setPy(converteInidicePosicao(lin));
 
+				} else if (grade[lin][col] == Nivel.P3) {
+					inimigos[2].setPx(converteInidicePosicao(col));
+					inimigos[2].setPy(converteInidicePosicao(lin));
+				} else if (grade[lin][col] == Nivel.P4) {
+					inimigos[3].setPx(converteInidicePosicao(col));
+					inimigos[3].setPy(converteInidicePosicao(lin));
 				}
 			}
 		}
@@ -176,7 +219,6 @@ public class JogoCenario extends CenarioPadrao {
 		grade = null;
 		inimigos = null;
 	}
-
 	@Override
 	public void atualizar() {
 
@@ -222,10 +264,22 @@ public class JogoCenario extends CenarioPadrao {
 
 				if (el.getModo() == Pizza.Modo.CACANDO) {
 					reiniciar(); // Jogador perdeu
+					this.lossCounter--;
+					if (lossCounter == 0) {
+						receiveName();
+						estado = JogoCenario.Estado.PERDEU;
+
+						ranking.add(new Player(playerName, pontos));
+
+						Collections.sort(ranking);
+						saveRanking();
+
+						System.out.println("Array ordenado: "+ranking);
+					}
 				} else if (el.getModo() == Pizza.Modo.FUGINDO) {
 					el.setAtivo(false);
 					el.setModo(Pizza.Modo.FANTASMA);
-					pontos += 50;
+					this.pontos += 50;
 				}
 			}
 		}
@@ -536,13 +590,19 @@ public class JogoCenario extends CenarioPadrao {
 			return;
 		}
 
-		if (grade[lin][col] == Nivel.CN || grade[lin][col] == Nivel.SC) {
+		if (grade[lin][col] == Nivel.CN || grade[lin][col] == Nivel.SC || grade[lin][col] == Nivel.FV) {
 			pontos += grade[lin][col] == Nivel.CN ? 5 : 25;
+
+			if (grade[lin][col] == Nivel.FV)
+				pontos += 75;
+
 			totalPastilha--;
 
-			if (totalPastilha == 0)
-				estado = JogoCenario.Estado.GANHOU;
-			else if (grade[lin][col] == Nivel.SC)
+			if (totalPastilha == 0) {
+				atualizar();
+				carregar();
+
+			} else if (grade[lin][col] == Nivel.SC)
 				superPizza(true);
 
 			grade[lin][col] = Nivel.EV;
@@ -618,12 +678,19 @@ public class JogoCenario extends CenarioPadrao {
 					} else if (valor == Nivel.LN) {
 						g.setColor(Color.WHITE);
 						g.fillRect(col * largEl, lin * largEl + espLinha + ESPACO_TOPO, largEl, largEl - espLinha * 2);
+					} else if (valor == Nivel.FV) {
+						g.setColor(Color.RED);
+						g.fillOval(col * largEl + espLinha / 2, lin * largEl + espLinha / 2 + ESPACO_TOPO, largEl - espLinha, largEl - espLinha);
 					}
 				}
 			}
 		}
 
 		texto.desenha(g, "Pontos: " + pontos, 10, 20);
+		texto.desenha(g, "Vidas: " + lossCounter, 380, 20);
+		paintRankOnScreen(g);
+
+//		paintRankOnScreen(g);
 
 		pizza.desenha(g);
 
@@ -651,4 +718,73 @@ public class JogoCenario extends CenarioPadrao {
 
 	}
 
+	public void receiveName() {
+		String nome = JOptionPane.showInputDialog("Escreva seu nome para nosso ranking!");
+		this.playerName = nome;
+		JOptionPane.showMessageDialog(null, "Você é: " + playerName + " e fez " + pontos + " pontos");
+	}
+
+	public void saveRanking () {
+		try {
+			File file = new File("C:\\Users\\Maria\\IdeaProjects\\Cap06\\ranking.txt");
+
+			FileOutputStream completeRankingWriting = new FileOutputStream(file);
+			String name;
+			int pontos;
+
+			for (Player player : this.ranking) {
+				name = player.getNome();
+				pontos = player.getPontos();
+
+				completeRankingWriting.write((name + " " + pontos+"\n").getBytes());
+			}
+			completeRankingWriting.close();
+
+		} catch (Exception e) {
+			System.out.println("We can't write in your file! " + e);
+		}
+	}
+
+	public void readRanking () {
+		String nome = "";
+		int pontos = 0;
+		try {
+			File file = new File("C:\\Users\\Maria\\IdeaProjects\\Cap06\\ranking.txt");
+
+			Scanner input = new Scanner(file);
+
+			while (input.hasNext()) {
+				nome = input.next();
+				pontos = input.nextInt();
+
+				ranking.add(new Player(nome, pontos));
+			}
+			input.close();
+		} catch (Exception e) {
+			System.out.println("We can't read your file! " + e);
+		}
+	}
+
+	public boolean restartGame() {
+		if (estado.equals(Estado.PERDEU)) {
+			return true;
+		}
+		return false;
+	}
+
+	public void paintRankOnScreen(Graphics2D g) {
+		int x = 12;
+		int y = 40;
+		int maxRanking = 0;
+
+		for (Player player : ranking) {
+			if (maxRanking == 10) {
+				break;
+			}
+			player.showRanking(g, x, y);
+
+			y += 15;
+			maxRanking++;
+		}
+	}
 }

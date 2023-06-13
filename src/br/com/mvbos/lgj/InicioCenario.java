@@ -9,7 +9,8 @@ import br.com.mvbos.lgj.base.Util;
 public class InicioCenario extends CenarioPadrao {
 
 	public InicioCenario(int largura, int altura) {
-		super(largura, altura);
+		this.largura = largura;
+		this.altura = altura;
 	}
 
 	private Menu menuJogo;
@@ -49,7 +50,6 @@ public class InicioCenario extends CenarioPadrao {
 	@Override
 	public void desenhar(Graphics2D g) {
 		menuJogo.desenha(g);
-
 	}
 
 }

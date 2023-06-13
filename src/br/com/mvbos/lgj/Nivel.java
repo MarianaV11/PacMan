@@ -21,7 +21,10 @@ public class Nivel {
 	/** Ponto de Fuga */
 	public static final int PF = 8;
 	/** Ponto de Volta */
-	public static final int PV = 9; 
+	public static final int PV = 9;
+	public static final int P3 = 10;
+	public static final int P4 = 11;
+	public static final int FV = 12;
 
 	public static int[][] cenario = {
 		{ BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL },
@@ -29,7 +32,7 @@ public class Nivel {
 		{ BL, CN, BL, BL, BL, BL, CN, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, CN, BL, BL, BL, BL, CN, BL },
 		{ BL, SC, BL, EV, EV, BL, CN, BL, EV, EV, EV, BL, CN, BL, BL, CN, BL, EV, EV, EV, BL, CN, BL, EV, EV, BL, SC, BL },
 		{ BL, CN, BL, BL, BL, BL, CN, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, CN, BL, BL, BL, BL, CN, BL },
-		{ BL, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, BL },
+		{ BL, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, FV, CN, BL },
 		{ BL, CN, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, CN, BL },
 		{ BL, CN, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, CN, BL },
 		{ BL, CN, CN, CN, CN, CN, CN, BL, BL, CN, CN, CN, CN, BL, BL, CN, CN, CN, CN, BL, BL, CN, CN, CN, CN, CN, CN, BL },
@@ -38,8 +41,8 @@ public class Nivel {
 		{ EV, EV, EV, EV, EV, BL, CN, BL, BL, EV, EV, EV, EV, PF, P1, EV, EV, EV, EV, BL, BL, CN, BL, EV, EV, EV, EV, EV },
 		{ EV, EV, EV, EV, EV, BL, CN, BL, BL, EV, BL, BL, BL, LN, LN, BL, BL, BL, EV, BL, BL, CN, BL, EV, EV, EV, EV, EV },
 		{ BL, BL, BL, BL, BL, BL, CN, BL, BL, EV, BL, EV, EV, EV, EV, EV, EV, BL, EV, BL, BL, CN, BL, BL, BL, BL, BL, BL },
-		{ CN, CN, CN, CN, CN, CN, CN, CN, CN, EV, BL, EV, EV, EV, EV, EV, EV, BL, EV, CN, CN, CN, CN, CN, CN, CN, CN, CN },
-		{ BL, BL, BL, BL, BL, BL, CN, BL, BL, EV, BL, EV, P2, PV, EV, EV, EV, BL, EV, BL, BL, CN, BL, BL, BL, BL, BL, BL },
+		{ CN, CN, CN, FV, CN, CN, CN, CN, CN, EV, BL, EV, EV, EV, EV, EV, EV, BL, EV, CN, CN, CN, CN, CN, CN, CN, CN, CN },
+		{ BL, BL, BL, BL, BL, BL, CN, BL, BL, EV, BL, EV, P2, PV, P3, P4, EV, BL, EV, BL, BL, CN, BL, BL, BL, BL, BL, BL },
 		{ EV, EV, EV, EV, EV, BL, CN, BL, BL, EV, BL, BL, BL, BL, BL, BL, BL, BL, EV, BL, BL, CN, BL, EV, EV, EV, EV, EV },
 		{ EV, EV, EV, EV, EV, BL, CN, BL, BL, EV, EV, EV, EV, PI, EV, EV, EV, EV, EV, BL, BL, CN, BL, EV, EV, EV, EV, EV },
 		{ EV, EV, EV, EV, EV, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, EV, EV, EV, EV, EV },
@@ -53,7 +56,7 @@ public class Nivel {
 		{ BL, CN, CN, CN, CN, CN, CN, BL, BL, CN, CN, CN, CN, BL, BL, CN, CN, CN, CN, BL, BL, CN, CN, CN, CN, CN, CN, BL },
 		{ BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL },
 		{ BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL, BL, CN, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, CN, BL },
-		{ BL, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, BL },
+		{ BL, CN, CN, CN, CN, CN, CN, CN, CN, CN, FV, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, CN, BL },
 		{ BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL, BL } };
 
 }
